@@ -3,6 +3,7 @@ import java.util.*;
 import java.lang.IllegalArgumentException; 
 import practice2.OrderSystem.PizzaType; //call our enum for pizza type
 import practice2.OrderSystem.PizzaSize; //call our enum for pizza size
+import practice2.OrderSystem.Toppings;
 public class PizzaOrderingSystem {
 
 	public static void main(String[] args) {
@@ -32,16 +33,13 @@ public class PizzaOrderingSystem {
 				isRunning = false;
 				sc.close();
 			}
-			
 		}
-		
-
 	}
-	
 	//method
 	public static void orderPizza(Scanner sc, List<OrderSystem> order) {
 		PizzaType type; //call pizza type
 		PizzaSize size; //call pizza size
+		Toppings top;
 		int i = 1;
 		int j = 2;
 		
@@ -68,11 +66,21 @@ public class PizzaOrderingSystem {
 			System.out.println("Invalid type, defaulting	 to PEPPERONI");
 			type = PizzaType.PEPPERONI;
 		}
+		
+		System.out.println("Choose your toppings(WORDS ONLY)");
+		for(Toppings t : Toppings.values()) {
+			System.out.println(t);
+		}
+		try {
+			top = Toppings.valueOf(sc.nextLine().toUpperCase());
+		}catch(IllegalArgumentException e) {
+			System.out.println("Invalid type, No toppings");
+			top = Toppings.NONE; //initialize this when you use enum valueof
+		}
 		  
-		;
 		//then it add to our new orders system
 		//chekcs the price
-		OrderSystem pizza = new OrderSystem(size, type);
+		OrderSystem pizza = new OrderSystem(size, type, top);
 		order.add(pizza);
 		System.out.println("Order added: " + type + " " + size);
 		System.out.printf("Price: %.2f", pizza.getPriceForPizza());
@@ -107,6 +115,5 @@ public class PizzaOrderingSystem {
 				System.out.println("Invalid!");
 			}
 		}
-		
 	}
 }
