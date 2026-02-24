@@ -15,16 +15,25 @@ public class OrderSystem {
 		CHEESY,
 		HAWAIIAN
 	}
+	
+	public enum Toppings {
+		SAUSAGE,
+		BACON,
+		ONIONS,
+		OLIVES,
+		NONE
+	}
 	//fields
 	PizzaSize size;
 	PizzaType type;
+	Toppings top;
 	private double price; 
 	
 	//constructor
-	public OrderSystem(PizzaSize size, PizzaType type) {
+	public OrderSystem(PizzaSize size, PizzaType type, Toppings top) {
 		this.size = size;
 		this.type = type;
-	
+		this.top = top;
 	}
 	
 	//getter
