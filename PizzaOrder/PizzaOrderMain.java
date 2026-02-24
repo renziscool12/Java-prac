@@ -82,7 +82,7 @@ public class PizzaOrderingSystem {
 		//chekcs the price
 		OrderSystem pizza = new OrderSystem(size, type, top);
 		order.add(pizza);
-		System.out.println("Order added: " + type + " " + size);
+		System.out.println("Order added: " + type + " " + size + " with " + top);
 		System.out.printf("Price: %.2f", pizza.getPriceForPizza());
 		
 	}
