@@ -1,4 +1,5 @@
 package practice2;
+import java.lang.IllegalArgumentException; 
 
 public class OrderSystem {
 	//enum for pizza size
@@ -13,14 +14,15 @@ public class OrderSystem {
 	public enum PizzaType {
 		PEPPERONI,
 		CHEESY,
-		HAWAIIAN
+		HAWAIIAN,
+		NEAPOLITAN
 	}
 	
 	public enum Toppings {
-		SAUSAGE,
 		BACON,
-		ONIONS,
 		OLIVES,
+		SAUSAGE,
+		ONIONS,
 		NONE
 	}
 	//fields
@@ -37,56 +39,35 @@ public class OrderSystem {
 	}
 	
 	//getter
-	public double getPrice() { return price; }
-	
 	public double getPriceForPizza() {
+		switch(size) {
+		case SMALL: price += 45.2; break;
+		case MEDIUM: price += 49.3; break;
+		case LARGE: price += 54.5; break;
+		case XLARGE: price += 60.22; break;	
+		default:
+			throw new IllegalArgumentException("Invalid!");
+		}
+		
 		switch(type) {
-		case PEPPERONI:
-			switch(size) {
-			case SMALL:
-				return 110.09;
-			case MEDIUM:
-				return 115.2;
-			case LARGE:
-				return 120.72;
-			case XLARGE:
-				return 130.12;
-				default:
-					System.out.println("Unexpected Pizza!");
-					return price;
-			}
-		case CHEESY:
-			switch(size) {
-			case SMALL:
-				return 130.11;
-			case MEDIUM:
-				return 135.32;
-			case LARGE:
-				return 140.21;
-			case XLARGE:
-				return 150;
-				default:
-					System.out.println("Unexpected Pizza!");
-					return price;
-			}
-		case HAWAIIAN:
-			switch(size) {
-			case SMALL:
-				return 155.89;
-			case MEDIUM:
-				return 165.22;
-			case LARGE:
-				return 170.32;
-			case XLARGE:
-				return 175.55;
-				default:
-					System.out.println("Unexpected Pizza!");
-					return price;
-			}
-			default:
-				System.out.println("Unexpected Pizza!");
-				return price;
-		}	
+		case PEPPERONI: price += 55.3; break;
+		case CHEESY: price += 61.1; break;
+		case HAWAIIAN: price += 66.2; break;
+		case NEAPOLITAN: price += 70.7; break;
+		default:
+			throw new IllegalArgumentException("Invalid!");
+		}
+		
+		switch(top) {
+		case BACON: price += 32.2; break;
+		case OLIVES: price += 29.4; break;
+		case SAUSAGE: price += 39.11; break;
+		case ONIONS: price += 28.65; break;
+		case NONE: price += 0.0; break;
+		default:
+			throw new IllegalArgumentException("Invalid!");
+		}
+		return price;
 	}
 	
 	public static void Menu() {
@@ -99,6 +80,6 @@ public class OrderSystem {
 	}
 	
 	public String toString() {
-		return  "Size: " + size + " | Type: " + type + " | Price: " + price;
+		return  "Size: " + size + " | Type: " + type + " with " + top + " | Price: " + price;
 	}
 }
