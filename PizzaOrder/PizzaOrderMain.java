@@ -40,13 +40,11 @@ public class PizzaOrderingSystem {
 		PizzaType type; //call pizza type
 		PizzaSize size; //call pizza size
 		Toppings top;
-		int i = 1;
-		int j = 2;
-		
+		String again;
+		do {
 		System.out.println("Choose pizza size(WORDS ONLY)");// Ask the user which size of pizza they want
 		for(PizzaSize s : PizzaSize.values()) {
-			System.out.println(i + ". " + s);
-			i++;
+			System.out.println( s);
 		}
 		try { //try if you picked something then it adds to array list named order
 			size = PizzaSize.valueOf(sc.nextLine().toUpperCase());
@@ -57,8 +55,7 @@ public class PizzaOrderingSystem {
 		
 		System.out.println("Choose your pizza(WORDS ONLY)"); // Ask the user which type of pizza they want
 		for(PizzaType t : PizzaType.values()) {
-			System.out.println(j + ". " + t);
-			j++;
+			System.out.println(t);
 		}
 		try { //try if you picked something then it adds to array list named order
 			type = PizzaType.valueOf(sc.nextLine().toUpperCase());
@@ -77,14 +74,15 @@ public class PizzaOrderingSystem {
 			System.out.println("Invalid type, No toppings");
 			top = Toppings.NONE; //initialize this when you use enum valueof
 		}
-		  
-		//then it add to our new orders system
-		//chekcs the price
 		OrderSystem pizza = new OrderSystem(size, type, top);
 		order.add(pizza);
 		System.out.println("Order added: " + type + " " + size + " with " + top);
-		System.out.printf("Price: %.2f", pizza.getPriceForPizza());
+		System.out.printf("Price: ₱%.2f%n", pizza.getPriceForPizza());
 		
+		
+		System.out.print("Do you want to order again? (YES/NO): ");
+		again = sc.nextLine();
+		}while(again.equalsIgnoreCase("yes"));
 	}
 	
 	//checks if we order something or not
