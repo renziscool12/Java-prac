@@ -1,26 +1,24 @@
 package practice2;
 import java.util.*;
 import java.lang.IllegalArgumentException; 
-import practice2.OrderSystem.PizzaType; //call our enum for pizza type
-import practice2.OrderSystem.PizzaSize; //call our enum for pizza size
-import practice2.OrderSystem.Toppings;
+import practice2.Pizza.PizzaType; //call our enum for pizza type
+import practice2.Pizza.PizzaSize; //call our enum for pizza size
+import practice2.Pizza.Toppings;
 public class PizzaOrderingSystem {
-
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in); //scanner to read input
-		List<OrderSystem> order = new ArrayList<>(); //add all pizza here
+		List<Pizza> order = new ArrayList<>(); //add all pizza here
 		boolean isRunning = true; //bool flag for the main menu loop
 	
 		//menu
 		while(isRunning) {
-			OrderSystem.Menu();
+			Pizza.Menu();
 			String choice = sc.nextLine();
 			
 			//choices
 			switch(choice) {
 			case "1":
 				orderPizza(sc,order);
-				
 				break;
 			case "2":
 				viewOrders(order);
@@ -29,6 +27,9 @@ public class PizzaOrderingSystem {
 				cancelOrder(order, sc);
 				break;
 			case "4":
+				totalPizza(order);
+				break;
+			case "5":
 				System.out.println("Exiting. . .");
 				isRunning = false;
 				sc.close();
@@ -36,11 +37,13 @@ public class PizzaOrderingSystem {
 		}
 	}
 	//method
-	public static void orderPizza(Scanner sc, List<OrderSystem> order) {
+	public static void orderPizza(Scanner sc, List<Pizza> Pizza) {
 		PizzaType type; //call pizza type
 		PizzaSize size; //call pizza size
-		Toppings top;
+		int quantity = 1;
 		String again;
+		
+		
 		do {
 		System.out.println("Choose pizza size(WORDS ONLY)");// Ask the user which size of pizza they want
 		for(PizzaSize s : PizzaSize.values()) {
@@ -64,54 +67,95 @@ public class PizzaOrderingSystem {
 			type = PizzaType.PEPPERONI;
 		}
 		
-		System.out.println("Choose your toppings(WORDS ONLY)");
+		//tells you what toppings are available
+		System.out.println("Toppings available.");
 		for(Toppings t : Toppings.values()) {
 			System.out.println(t);
 		}
-		try {
-			top = Toppings.valueOf(sc.nextLine().toUpperCase());
-		}catch(IllegalArgumentException e) {
-			System.out.println("Invalid type, No toppings");
-			top = Toppings.NONE; //initialize this when you use enum valueof
+		List<Toppings> selectToppings = new ArrayList<>();
+		String input;
+		
+		while(true) { // while if you want multiple toppings
+			System.out.println("Entter toppings you wish to put (e.g., BACON, OLIVES) Type 'done' to prooced");
+			input = sc.nextLine().trim();
+			
+			if(input.equalsIgnoreCase("done"))	{ // if done it will proceed to the next line of code
+				break;
+			}
+			
+			for(String topp : input.split(",")) { // split for when you order multiple toppings like this Onions, sausage
+				try {
+					Toppings topping = Toppings.valueOf(topp.trim().toUpperCase());
+					if(topping != Toppings.NONE) {
+						selectToppings.add(topping);
+					}
+				}catch(IllegalArgumentException e ) {
+					System.out.println(topp.trim() + " is invalid!");
+				}
+			}
 		}
-		OrderSystem pizza = new OrderSystem(size, type, top);
-		order.add(pizza);
-		System.out.println("Order added: " + type + " " + size + " with " + top);
+		System.out.print("How many? "); // quantity
+		try {
+			quantity = Integer.parseInt(sc.nextLine().trim());
+			if(quantity <= 0) {
+				System.out.println("Invalid, you get one");
+				quantity = 1;
+			}
+		}catch(IllegalArgumentException e) {
+			System.out.println("Invalid input, you get one");
+			quantity = 1;
+		}
+		
+	
+		Pizza pizza = new Pizza(size, type, selectToppings, quantity);
+		Pizza.add(pizza);
+		System.out.println("Order added: " + type + " " + size + " with " + selectToppings + " x " + quantity);
 		System.out.printf("Price: ₱%.2f%n", pizza.getPriceForPizza());
-		
-		
+	
 		System.out.print("Do you want to order again? (YES/NO): ");
 		again = sc.nextLine();
 		}while(again.equalsIgnoreCase("yes"));
 	}
 	
 	//checks if we order something or not
-	public static void viewOrders(List<OrderSystem> order) {
-		if(order.isEmpty()) {
+	public static void viewOrders(List<Pizza> pizza) {
+		if(pizza.isEmpty()) {
 			System.out.println("You didn't ordered anything!");
 		}else {
-			for(OrderSystem orders : order) {
+			for(Pizza orders : pizza) {
 				System.out.println(orders);
 			}
 		}
 	}
 	//cancels order
-	public static void cancelOrder(List <OrderSystem> order, Scanner sc) {
-		if(order.isEmpty()) {
+	public static void cancelOrder(List <Pizza> pizza, Scanner sc) {
+		if(pizza.isEmpty()) {
 			System.out.println("No pizza to cancel!");
 		}else {
-			for(OrderSystem orders : order) {
+			for(Pizza orders : pizza) {
 				System.out.println(orders);
 			}
 			System.out.println("Choose a pizza to cancel");
 			int cancelPizza = Integer.parseInt(sc.nextLine()) - 1;
 			
-			if(cancelPizza >= 0 && cancelPizza < order.size()) {
-				order.remove(cancelPizza);
+			if(cancelPizza >= 0 && cancelPizza < pizza.size()) {
+				pizza.remove(cancelPizza);
 				System.out.println("Successfully Canceled!");
 			}else {
 				System.out.println("Invalid!");
 			}
 		}
+	}
+	public static double totalPizza(List<Pizza> pizza) {
+		double totalSum = 0;
+		if(pizza.isEmpty()) {
+			System.out.println("No order yet!");
+		}else {
+		for(Pizza e : pizza) {
+			totalSum += e.getPriceForPizza();
+		}
+		System.out.printf("The toatl cost of the pizza is: ₱%.2f%n" + totalSum);
+	}
+		return totalSum;
 	}
 }
