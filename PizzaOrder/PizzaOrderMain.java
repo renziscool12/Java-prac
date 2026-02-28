@@ -1,5 +1,7 @@
 package practice2;
 import java.util.*;
+import java.io.PrintWriter;
+import java.io.IOException;
 import java.lang.IllegalArgumentException; 
 import practice2.Pizza.PizzaType; //call our enum for pizza type
 import practice2.Pizza.PizzaSize; //call our enum for pizza size
@@ -7,7 +9,7 @@ import practice2.Pizza.Toppings;
 public class PizzaOrderingSystem {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in); //scanner to read input
-		List<Pizza> order = new ArrayList<>(); //add all pizza here
+		List<Pizza> pizza = new ArrayList<>(); //add all pizza here
 		boolean isRunning = true; //bool flag for the main menu loop
 	
 		//menu
@@ -18,18 +20,21 @@ public class PizzaOrderingSystem {
 			//choices
 			switch(choice) {
 			case "1":
-				orderPizza(sc,order);
+				orderPizza(sc,pizza);
 				break;
 			case "2":
-				viewOrders(order);
+				viewOrders(pizza);
 				break;
 			case "3":
-				cancelOrder(order, sc);
+				cancelOrder(pizza, sc);
 				break;
 			case "4":
-				totalPizza(order);
+				totalPizza(pizza);
 				break;
 			case "5":
+				saveToFile(pizza);
+				break;
+			case "6":
 				System.out.println("Exiting. . .");
 				isRunning = false;
 				sc.close();
@@ -72,7 +77,7 @@ public class PizzaOrderingSystem {
 		for(Toppings t : Toppings.values()) {
 			System.out.println(t);
 		}
-		List<Toppings> selectToppings = new ArrayList<>();
+		List<Toppings> selectToppings = new ArrayList<>(); // Call toppings so the user can make multiple tops
 		String input;
 		
 		while(true) { // while if you want multiple toppings
@@ -110,7 +115,7 @@ public class PizzaOrderingSystem {
 		Pizza pizza = new Pizza(size, type, selectToppings, quantity);
 		Pizza.add(pizza);
 		System.out.println("Order added: " + type + " " + size + " with " + selectToppings + " x " + quantity);
-		System.out.printf("Price: ₱%.2f%n", pizza.getPriceForPizza());
+		System.out.printf("Price: ₱%.2f%n", pizza.basePrice());
 	
 		System.out.print("Do you want to order again? (YES/NO): ");
 		again = sc.nextLine();
@@ -146,16 +151,34 @@ public class PizzaOrderingSystem {
 			}
 		}
 	}
+	//total cost of the pizza
 	public static double totalPizza(List<Pizza> pizza) {
 		double totalSum = 0;
 		if(pizza.isEmpty()) {
 			System.out.println("No order yet!");
 		}else {
 		for(Pizza e : pizza) {
-			totalSum += e.getPriceForPizza();
+			totalSum += e.basePrice();
 		}
-		System.out.printf("The toatl cost of the pizza is: ₱%.2f%n" + totalSum);
+		System.out.printf("The total cost of the pizza is: ₱%.2f%n", totalSum);
 	}
 		return totalSum;
+	}
+	
+	//save file
+	public static void saveToFile(List<Pizza> pizza) {
+		try(PrintWriter pw = new PrintWriter("orders.txt")) {
+			System.out.println("---Your Orders---");
+			for(Pizza p : pizza) {
+				pw.println(p.getQuantity() + " x " + p.getType() + " (" + p.getSize() + ") with " + p.getToppings());
+			}
+			pw.close();
+			if(pizza.isEmpty()) {
+				System.out.println("⚠ You haven't ordered anything! Saving failed.");
+			}
+			System.out.println("Order saved!");
+		}catch(IOException e) {
+			System.out.println("Error saving orders: " + e.getMessage());
+		}
 	}
 }
