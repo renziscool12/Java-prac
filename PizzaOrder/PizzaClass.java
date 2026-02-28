@@ -1,6 +1,6 @@
 package practice2;
 import java.lang.IllegalArgumentException;
-import java.util.*;; 
+import java.util.*;
 
 public class Pizza {
 	//enum for pizza size
@@ -39,7 +39,7 @@ public class Pizza {
 		this.type = type;
 		this.toppings = new ArrayList<>(toppings); //defense copy
 		this.quantity = quantity;
-		this.price = getPriceForPizza() * this.quantity;
+		this.price = basePrice(); // price of 1 pizza (size + type + toppings)
 	}
 	
 	
@@ -48,7 +48,8 @@ public class Pizza {
 	// Do not call getPriceForPizza() multiple times per pizza unless intended.
 	// Always initialize your total price before summing multiple pizzas to avoid inflation.
 	// always initialize another variable if you want total all prices of the items
-	public double getPriceForPizza() {
+	// Calculate base price of a single pizza
+	public double basePrice() {
 		double totalPrice = 0;
 		switch(size) {
 		case SMALL: totalPrice += 45.2; break;
@@ -67,12 +68,16 @@ public class Pizza {
 		default:
 			throw new IllegalArgumentException("Invalid!");
 		}
-		
-		totalPrice += toppings.size() * 6;
-		return totalPrice * quantity;
+		// Add toppings price each topping = 6
+		totalPrice += toppings.size() * 6; // 6 peso per each topping
+		return totalPrice * quantity; // price for 1 pizza * quantity
 	}
 	
+	//getters
 	public double getPrice() { return this.price; }
+	public PizzaType getType() { return type; }
+	public PizzaSize getSize() { return size; }
+	public List<Toppings> getToppings() { return new ArrayList<>(toppings); } // return defensive copy
 	public int getQuantity() { return this.quantity; }
 	
 	public static void Menu() {
@@ -81,10 +86,12 @@ public class Pizza {
 			System.out.println("[2] View Order");
 			System.out.println("[3] Cancel Order");
 			System.out.println("[4] Total orders");
-			System.out.println("[5] Exit");
+			System.out.println("[5] Save Receipt");
+			System.out.println("[6] Exit");
 			System.out.print("Your choice: ");
 	}
 	
+	@Override
 	public String toString() {
 		return String.format("Size: %s Type: %s with %s | Price: %.2f",  size, type, toppings, price);
 	}
