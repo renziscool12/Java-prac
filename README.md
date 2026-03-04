@@ -1,1 +1,1 @@
-# Java-prac
+# Java-mini
